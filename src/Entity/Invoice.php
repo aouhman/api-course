@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\InvoiceRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     attributes={
  *     "pagination_enabled"=true,
  *     "pagination_items_per_pge"=20,
- *     "order":{"sendAt":"desc"}
+ *     "order":{"sentAt":"desc"}
  *     })
  */
 class Invoice
