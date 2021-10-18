@@ -7,4 +7,5 @@ api_platform:
         versions: [3]
     collection:
         pagination:
-            enabled: false
+            enabled: true
+            items_per_page: 2
