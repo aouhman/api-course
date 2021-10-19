@@ -4,22 +4,26 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\CustomerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
  * @ApiResource(
- *     normalizationContext={
- *      "groups" ={"customers_read"}
- *     },
- *     collectionOperations={"GET","POST"},
- *     itemOperations={"GET","PUT","DELETE"}
+ *     normalizationContext={ "groups" ={"customers_read"}  },
+ *
+ *     collectionOperations={"GET"={"path"="customers"},"POST"},
+ *
+ *     itemOperations={"GET"={"path"="customers/{id}"},"PUT","DELETE"},
+ *
+ *     subresourceOperations={"invoices_get_subresource"={"path"="customers/{id}/invoices"}}
  * )
- * @ApiFilter(ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter::class,properties={"firstName","lastName","company"})
+ * @ApiFilter(SearchFilter::class,properties={"firstName","lastName","company"})
  */
 class Customer
 {
@@ -83,6 +87,7 @@ class Customer
     /**
      * @ORM\OneToMany(targetEntity=Invoice::class, mappedBy="customer")
      * @Groups({"customers_read"})
+     * @ApiSubresource()
      */
     private $invoices;
 
