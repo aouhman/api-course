@@ -15,8 +15,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ApiResource
+ * @ApiResource(  normalizationContext={
+ *      "groups" ={"users_read"}
+ *     })
  * @UniqueEntity("email",message="l'email est déja existe dans la bdd")
+ *
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -24,13 +27,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"customers_read","invoices_read"})
+     * @Groups({"customers_read","invoices_read","users_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"customers_read","invoices_read"})
+     * @Groups({"customers_read","invoices_read","users_read"})
      * @Assert\NotBlank(message="l'adresse email est obligatoire")
      * @Assert\Email(message="le format de email n'est pas valide")
      */
@@ -38,7 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="json")
-     * @Groups({"customers_read","invoices_read"})
+     * @Groups({"customers_read","invoices_read","users_read"})
      */
     private $roles = [];
 
@@ -51,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read","invoices_read"})
+     * @Groups({"customers_read","invoices_read","users_read"})
      * @Assert\NotBlank(message="le prénom du customer est obligatoire")
      * @Assert\Length(
      *     min=3,minMessage="Le prénom doit faire entre 3 et 255 caractéres",
@@ -62,7 +65,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customers_read","invoices_read"})
+     * @Groups({"customers_read","invoices_read","users_read"})
      * @Assert\NotBlank(message="le nom de famille du customer est obligatoire")
      * @Assert\Length(
      *     min=3,minMessage="Le nom de famille d doit faire entre 3 et 255 caractéres",
