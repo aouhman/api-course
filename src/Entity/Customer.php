@@ -12,13 +12,42 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
- * @ApiResource(normalizationContext={
+ * @ApiResource(
+ *     normalizationContext={
  *      "groups" ={"customers_read"}
- *     })
+ *     },
+ *     collectionOperations={"GET","POST"},
+ *     itemOperations={"GET","PUT","DELETE"}
+ * )
  * @ApiFilter(ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter::class,properties={"firstName","lastName","company"})
  */
 class Customer
 {
+
+    /**
+     * Permet de recuperer le total des factures
+     * @Groups({"customers_read","invoices_read"})
+     * @return float
+     */
+    public function getTotalAmount(): float
+    {
+        return array_reduce($this->invoices->toArray(), function ($total, $invoice) {
+            return $total + $invoice->getAmount();
+        }, 0);
+    }
+
+    /**
+     * Permet de recuperer le total des factures non payés
+     * @Groups({"customers_read","invoices_read"})
+     * @return float
+     */
+    public function getUnpaidAmount(): float
+    {
+        return array_reduce($this->invoices->toArray(), function ($total, $invoice) {
+            return $total + (($invoice->getStatus() === 'PAID' || $invoice->getStatus() === 'CANCELLED') ? 0 : $invoice->getAmount());
+        }, 0);
+    }
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -162,4 +191,6 @@ class Customer
 
         return $this;
     }
+
+
 }
