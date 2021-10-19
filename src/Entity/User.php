@@ -7,13 +7,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ApiResource
+ * @UniqueEntity("email",message="l'email est déja existe dans la bdd")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -28,6 +31,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=180, unique=true)
      * @Groups({"customers_read","invoices_read"})
+     * @Assert\NotBlank(message="l'adresse email est obligatoire")
+     * @Assert\Email(message="le format de email n'est pas valide")
      */
     private $email;
 
@@ -40,18 +45,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="le mot de passe ne doit pas être vide")
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read","invoices_read"})
+     * @Assert\NotBlank(message="le prénom du customer est obligatoire")
+     * @Assert\Length(
+     *     min=3,minMessage="Le prénom doit faire entre 3 et 255 caractéres",
+     *     max=255,  maxMessage="Le prénom doit faire moins de 255 caractéeres"
+     * )
      */
     private $firstName;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"customers_read","invoices_read"})
+     * @Assert\NotBlank(message="le nom de famille du customer est obligatoire")
+     * @Assert\Length(
+     *     min=3,minMessage="Le nom de famille d doit faire entre 3 et 255 caractéres",
+     *     max=255,  maxMessage="Le nom de famille d doit faire moins de 255 caractéeres"
+     * )
      */
     private $lastName;
 

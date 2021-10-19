@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\InvoiceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=InvoiceRepository::class)
@@ -30,7 +31,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      "api_customers_invoices_get_subresource"={
  *         "normalization_context"={"groups"={"invoices_subresource"}}
  *           }
- *     }
+ *     },
+ *     denormalizationContext={"disable_type_enforcement"=true}
  *
  *     )
  */
@@ -47,18 +49,24 @@ class Invoice
     /**
      * @ORM\Column(type="float")
      * @Groups({"invoices_read","customers_read","invoices_subresource"})
+     * @Assert\NotBlank(message="le montant de la facture est obligatoire")
+     * @Assert\Type(type="numeric",message="le montant de la facture doit être un numerique")
      */
     private $amount;
 
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"invoices_read","customers_read","invoices_subresource"})
+     * @Assert\DateTime(message="la date doit être YYYY-MM-DD")
+     * @Assert\NotBlank(message="la date d'envoi ne doit pas être vide")
      */
     private $sentAt;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"invoices_read","customers_read","invoices_subresource"})
+     * @Assert\NotBlank(message="le status de la facture est obligatoire")
+     * @Assert\Choice(choices={"SENT","PAID","CANCELLED"},message="Le status doit être SENT ,PAID ,CANCELLED")
      */
     private $status;
 
@@ -66,12 +74,15 @@ class Invoice
      * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="invoices")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"invoices_read"})
+     * @Assert\NotBlank(message="Le client de la facture ne doit pas être vide")
      */
     private $customer;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"invoices_read","customers_read","invoices_subresource"})
+     * @Assert\NotBlank(message="Le chrono ne doit pas être vide")
+     * @Assert\Type(type="integer",message="le chrono droit etre numerique")
      */
     private $chrono;
 
@@ -85,7 +96,7 @@ class Invoice
         return $this->amount;
     }
 
-    public function setAmount(float $amount): self
+    public function setAmount($amount): self
     {
         $this->amount = $amount;
 
@@ -97,7 +108,7 @@ class Invoice
         return $this->sentAt;
     }
 
-    public function setSentAt(\DateTimeInterface $sentAt): self
+    public function setSentAt( $sentAt): self
     {
         $this->sentAt = $sentAt;
 
