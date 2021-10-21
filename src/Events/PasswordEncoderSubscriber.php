@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Entity\User;
-use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use ApiPlatform\Core\EventListener\EventPriorities;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
