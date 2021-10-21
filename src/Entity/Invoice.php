@@ -57,7 +57,7 @@ class Invoice
     /**
      * @ORM\Column(type="datetime")
      * @Groups({"invoices_read","customers_read","invoices_subresource"})
-     * @Assert\DateTime(message="la date doit être YYYY-MM-DD")
+     * @Assert\Type("\DateTimeInterface",message="la date doit être YYYY-MM-DD")
      * @Assert\NotBlank(message="la date d'envoi ne doit pas être vide")
      */
     private $sentAt;
@@ -108,9 +108,9 @@ class Invoice
         return $this->sentAt;
     }
 
-    public function setSentAt( $sentAt): self
+    public function setSentAt($sentAt)
     {
-        $this->sentAt = $sentAt;
+        $this->sentAt =$sentAt;
 
         return $this;
     }
