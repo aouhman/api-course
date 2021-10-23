@@ -12,3 +12,4 @@ commande pour installer le JWT : composer  require "lexik/jwt-authentication-bun
 commande pour creer dossier de configuration  mkdir -p config/jwt
 commande pour generer key jwt  php bin/console lexik:jwt:generate-keypair
 commande pour vider le cache symfony  php bin/console cache:clear
+commande pour installer webpack composer require encore
