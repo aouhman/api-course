@@ -15,6 +15,7 @@ import './bootstrap';
 import {HomePage} from "./js/pages/HomePage";
 import {HashRouter, Route, Switch,} from "react-router-dom";
 import {CustomersPage} from "./js/pages/CustomersPage";
+import {CustomersPageWithPagination} from "./js/pages/CustomersPageWithPagination";
 
 const App = () => {
     return (
@@ -22,6 +23,7 @@ const App = () => {
             <Navbar/>
             <main className="container pt-5">
                 <Switch>
+                    <Route path="/customerspagewithpagination" component={CustomersPageWithPagination}/>
                     <Route path="/customers" component={CustomersPage}/>
                     <Route path="/" component={HomePage}/>
                 </Switch>

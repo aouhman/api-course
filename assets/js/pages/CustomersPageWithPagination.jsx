@@ -3,18 +3,23 @@ import axios from 'axios'
 import {Pagination} from "../components/Pagination";
 
 
-export const CustomersPage = Props => {
+export const CustomersPageWithPagination = Props => {
 
     const [customers, setCustomers] = useState([]);
+    const [totalItems, setTotalItems] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        axios.get("http://localhost:8000/api/customers").then(response => response.data["hydra:member"])
-            .then(data => setCustomers(data))
+        axios.get(`http://localhost:8000/api/customers?pagination=true&count=${itemsPerPage}&page=${currentPage}`)
+            .then(response => {
+                setCustomers(response.data["hydra:member"])
+                setTotalItems(response.data["hydra:totalItems"])
+            })
             .catch(error => console.log(error));
-    }, []);
+    }, [currentPage]);
 
     const handlePageChange = (page) => {
+        setCustomers([]);
         setCurrentPage(page);
     }
 
@@ -31,12 +36,13 @@ export const CustomersPage = Props => {
             });
     }
     const itemsPerPage = 10;
-    const paginatedCustomers = Pagination.getData(customers,currentPage,itemsPerPage)
 
     return (
         <>
+            <h1>Liste des clients (pagination)</h1>
             <table className="table table-hover">
                 <thead>
+
                 <tr>
                     <th>Id</th>
                     <th>Client</th>
@@ -44,11 +50,13 @@ export const CustomersPage = Props => {
                     <th>Enterprise</th>
                     <th className="text-right">Factures</th>
                     <th className="text-right">Montant total</th>
-                    <th> </th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                {paginatedCustomers.map(({company, email, firstName, id, invoices, lastName, totalAmount}) => <tr key={id}>
+                {customers.length ===0 && <tr><td>Chargement ...</td></tr>}
+                {customers.map(({company, email, firstName, id, invoices, lastName, totalAmount}) => <tr
+                    key={id}>
                     <td>{id}</td>
                     <td>{firstName}{lastName}</td>
                     <td>{email}</td>
@@ -65,8 +73,8 @@ export const CustomersPage = Props => {
 
                 </tbody>
             </table>
-            <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={customers.length}
-            onPageChanged={handlePageChange}/>
+            <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={totalItems}
+                        onPageChanged={handlePageChange}/>
 
         </>
     );

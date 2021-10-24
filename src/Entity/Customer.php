@@ -16,7 +16,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
  * @ApiResource(
- *     attributes= {"pagination_enabled" = false},
+ *     attributes= {"pagination_enabled" = false,"pagination_client_enabled" = true},
+ *
  *     normalizationContext={ "groups" ={"customers_read"}  },
  *
  *     collectionOperations={"GET"={"path"="customers"},"POST"},
