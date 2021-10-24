@@ -32,7 +32,7 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
 
 
         //2. Si on demande des factures ou des client alors agir sur la requête pour qu'elle tien
-        if ( ($resourceClass === Customer::class || $resourceClass === Invoice::class ) && $user->getRoles()[0] != 'ROLE_ADMIN'
+        if ( ($resourceClass === Customer::class || $resourceClass === Invoice::class ) && isset($user)  && $user->getRoles()[0] != 'ROLE_ADMIN'
           //  && !$this->auth->isGranted("ROLE_ADMIN") bon pratique
         ) {
             $rootAlias = $queryBuilder->getRootAliases()[0];
