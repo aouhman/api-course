@@ -12,11 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=InvoiceRepository::class)
  * @ApiResource(
- *     attributes={
- *     "pagination_enabled"=true,
- *     "pagination_items_per_pge"=20,
- *     "order":{"sentAt":"desc"}
- *     },
+ *     attributes= {"pagination_enabled" = false,"pagination_client_enabled" = true},
+ *
  *     normalizationContext={
  *      "groups" ={"invoices_read"}
  *     },
