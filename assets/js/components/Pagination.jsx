@@ -27,7 +27,6 @@ export const Pagination = ({currentPage, itemsPerPage, length, onPageChanged}) =
 };
 Pagination.getData = (items, currentPage, itemsPerPage) => {
 
-    alert(items.length);
     const start = currentPage * itemsPerPage - itemsPerPage;
     return items.slice(start, start + itemsPerPage)
 }
