@@ -17,6 +17,7 @@ import {HashRouter, Route, Switch,} from "react-router-dom";
 import {CustomersPage} from "./js/pages/CustomersPage";
 import {CustomersPageWithPagination} from "./js/pages/CustomersPageWithPagination";
 import {InvoicesPage} from "./js/pages/InvoicesPage";
+import {InvoicesPageWithReactPagination} from "./js/pages/InvoicesPageWithReactPagination";
 
 const App = () => {
     return (
@@ -27,6 +28,7 @@ const App = () => {
                     <Route path="/customerspagewithpagination" component={CustomersPageWithPagination}/>
                     <Route path="/customers" component={CustomersPage}/>
                     <Route path="/invoices" component={InvoicesPage}/>
+                    <Route path="/invoicespagewithreactpagination" component={InvoicesPageWithReactPagination}/>
                     <Route path="/" component={HomePage}/>
                 </Switch>
             </main>
