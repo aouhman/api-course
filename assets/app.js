@@ -18,6 +18,7 @@ import {CustomersPage} from "./js/pages/CustomersPage";
 import {CustomersPageWithPagination} from "./js/pages/CustomersPageWithPagination";
 import {InvoicesPage} from "./js/pages/InvoicesPage";
 import {InvoicesPageWithReactPagination} from "./js/pages/InvoicesPageWithReactPagination";
+import {LoginPage} from "./js/pages/LoginPage";
 
 const App = () => {
     return (
@@ -25,6 +26,7 @@ const App = () => {
             <Navbar/>
             <main className="container pt-5">
                 <Switch>
+                    <Route path="/login" component={LoginPage}/>
                     <Route path="/customerspagewithpagination" component={CustomersPageWithPagination}/>
                     <Route path="/customers" component={CustomersPage}/>
                     <Route path="/invoices" component={InvoicesPage}/>
