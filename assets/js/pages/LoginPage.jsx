@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import AuthAPI from "../services/AuthAPI";
 
 
 export const LoginPage = () => {
@@ -6,13 +7,21 @@ export const LoginPage = () => {
         username: "",
         password: ""
     });
-    const handleChange = (event) => {
-        const name = event.currentTarget.name;
-        const value = event.currentTarget.value;
-         setCredentials({...credentials,[name]:value})
+    const [error, setError] = useState("");
+    const handleChange = ({currentTarget}) => {
+        const  {value,name} = currentTarget;
+        setCredentials({...credentials, [name]: value})
     }
-    const handleSubmit = event => {
+    const handleSubmit = async event => {
         event.preventDefault()
+        try {
+            await AuthAPI.authenticate(credentials);
+            setError("");
+        } catch (e) {
+            console.log(e.response)
+            setError("    Aucun compte ne possède cette adresse ou alors les informations ne correspondent pas")
+        }
+
 
         console.log(credentials);
     }
@@ -22,10 +31,16 @@ export const LoginPage = () => {
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="username">Adresse email
-                        <input className="form-control" type="email" id="username" name="username"
+                        <input className={"form-control " + (error && "is-invalid")} type="email" id="username"
+                               name="username"
                                placeholder="Adresse mail de connexion"
                                value={credentials.username} onChange={handleChange}/>
                     </label>
+                    {error && <div className="invalid-feedback d-block">
+                        {error}
+                    </div>
+                    }
+
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">Mot de passe
