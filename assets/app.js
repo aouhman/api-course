@@ -6,7 +6,7 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import React from "react";
+import React,{useState} from "react";
 import ReactDom from "react-dom";
 import './styles/app.css';
 import {Navbar} from "./js/components/Navbar";
@@ -19,14 +19,22 @@ import {CustomersPageWithPagination} from "./js/pages/CustomersPageWithPaginatio
 import {InvoicesPage} from "./js/pages/InvoicesPage";
 import {InvoicesPageWithReactPagination} from "./js/pages/InvoicesPageWithReactPagination";
 import {LoginPage} from "./js/pages/LoginPage";
+import AuthAPI from "./js/services/AuthAPI";
+
+
+AuthAPI.setup()
 
 const App = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(AuthAPI.isAuthenticated());
+    console.log(isAuthenticated);
     return (
         <HashRouter>
-            <Navbar/>
+            <Navbar isAuthenticated={isAuthenticated} onLogout={setIsAuthenticated}/>
             <main className="container pt-5">
                 <Switch>
-                    <Route path="/login" component={LoginPage}/>
+                    <Route path="/login" render={(props) => (
+                        <LoginPage     onLogin={setIsAuthenticated}/>)}/>
+
                     <Route path="/customerspagewithpagination" component={CustomersPageWithPagination}/>
                     <Route path="/customers" component={CustomersPage}/>
                     <Route path="/invoices" component={InvoicesPage}/>

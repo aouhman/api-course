@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import AuthAPI from "../services/AuthAPI";
 
 
-export const LoginPage = () => {
+export const LoginPage = ( {onLogin}) => {
     const [credentials, setCredentials] = useState({
         username: "",
         password: ""
@@ -17,13 +17,13 @@ export const LoginPage = () => {
         try {
             await AuthAPI.authenticate(credentials);
             setError("");
+            onLogin(true)
         } catch (e) {
             console.log(e.response)
             setError("    Aucun compte ne possède cette adresse ou alors les informations ne correspondent pas")
         }
 
 
-        console.log(credentials);
     }
     return (
         <>
