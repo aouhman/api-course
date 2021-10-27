@@ -1,15 +1,17 @@
-import React, {useState} from 'react';
+import React, {useState,useContext} from 'react';
 import AuthAPI from "../services/AuthAPI";
+import AuthContext from "../../contexts/AuthContext";
 
 
-export const LoginPage = ( {onLogin}) => {
+export const LoginPage = ({history}) => {
     const [credentials, setCredentials] = useState({
         username: "",
         password: ""
     });
     const [error, setError] = useState("");
+    const {setIsAuthenticated} = useContext(AuthContext);
     const handleChange = ({currentTarget}) => {
-        const  {value,name} = currentTarget;
+        const {value, name} = currentTarget;
         setCredentials({...credentials, [name]: value})
     }
     const handleSubmit = async event => {
@@ -17,7 +19,8 @@ export const LoginPage = ( {onLogin}) => {
         try {
             await AuthAPI.authenticate(credentials);
             setError("");
-            onLogin(true)
+            setIsAuthenticated(true)
+            history.push("/customers")
         } catch (e) {
             console.log(e.response)
             setError("    Aucun compte ne possède cette adresse ou alors les informations ne correspondent pas")

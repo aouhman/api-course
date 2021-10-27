@@ -6,43 +6,47 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import React,{useState} from "react";
+import React, {useState} from "react";
 import ReactDom from "react-dom";
 import './styles/app.css';
 import {Navbar} from "./js/components/Navbar";
 // start the Stimulus application
 import './bootstrap';
 import {HomePage} from "./js/pages/HomePage";
-import {HashRouter, Route, Switch,} from "react-router-dom";
+import {HashRouter, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {CustomersPage} from "./js/pages/CustomersPage";
 import {CustomersPageWithPagination} from "./js/pages/CustomersPageWithPagination";
 import {InvoicesPage} from "./js/pages/InvoicesPage";
 import {InvoicesPageWithReactPagination} from "./js/pages/InvoicesPageWithReactPagination";
 import {LoginPage} from "./js/pages/LoginPage";
 import AuthAPI from "./js/services/AuthAPI";
-
+import AuthContext from "./contexts/AuthContext";
+import {PrivateRoute} from "./js/components/PrivateRoute";
 
 AuthAPI.setup()
-
 const App = () => {
+    const NavbarWithRouter = withRouter(Navbar);
     const [isAuthenticated, setIsAuthenticated] = useState(AuthAPI.isAuthenticated());
-    console.log(isAuthenticated);
     return (
-        <HashRouter>
-            <Navbar isAuthenticated={isAuthenticated} onLogout={setIsAuthenticated}/>
-            <main className="container pt-5">
-                <Switch>
-                    <Route path="/login" render={(props) => (
-                        <LoginPage     onLogin={setIsAuthenticated}/>)}/>
-
-                    <Route path="/customerspagewithpagination" component={CustomersPageWithPagination}/>
-                    <Route path="/customers" component={CustomersPage}/>
-                    <Route path="/invoices" component={InvoicesPage}/>
-                    <Route path="/invoicespagewithreactpagination" component={InvoicesPageWithReactPagination}/>
-                    <Route path="/" component={HomePage}/>
-                </Switch>
-            </main>
-        </HashRouter>);
+        <AuthContext.Provider value={{
+            isAuthenticated,
+            setIsAuthenticated
+        }}>
+            <HashRouter>
+                <NavbarWithRouter/>
+                <main className="container pt-5">
+                    <Switch>
+                        <Route path="/login" component={LoginPage}/>
+                        <Route path="/customerspagewithpagination" component={CustomersPageWithPagination}/>
+                        <PrivateRoute component={CustomersPage} path="/customers"/>
+                        <PrivateRoute component={InvoicesPage} path="/invoices"/>
+                        <Route path="/invoicespagewithreactpagination" component={InvoicesPageWithReactPagination}/>
+                        <Route path="/" component={HomePage}/>
+                    </Switch>
+                </main>
+            </HashRouter>
+        </AuthContext.Provider>
+    );
 }
 
 const rootElement = document.querySelector("#app")
