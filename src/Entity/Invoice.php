@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     normalizationContext={
  *      "groups" ={"invoices_read"}
  *     },
- *     itemOperations={"GET","PUT","DELETE",
+ *     itemOperations={"GET","PUT","DELETE","POST" ,
  *     "increment"={"method"="post","path"="/invoices/{id}/increment",
  *                            "controller"="App\Controller\InvoiceIncrementationController",
  *                            "swagger_context"=   { "summary" ="increment invoice","description"="incrément le chrono de facture"}

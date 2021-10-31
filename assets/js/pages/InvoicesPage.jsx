@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Pagination} from "../components/Pagination";
 import InvoicesAPI from "../services/InvoicesAPI";
 import moment from "moment";
+import {Link} from "react-router-dom";
 
 const STATUS_CLASSES = {
     PAID:"success",
@@ -54,7 +55,7 @@ export const InvoicesPage = Props => {
 
 
     const itemsPerPage = 10;
-    const filtredInvoices  = invoices
+    const filteredInvoices  = invoices
         .filter(i =>
             i.customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
             i.customer.lastName.toLowerCase().includes(search.toLowerCase()) ||
@@ -63,7 +64,7 @@ export const InvoicesPage = Props => {
 
         )
 
-    const paginatedInvoices = Pagination.getData(filtredInvoices, currentPage, itemsPerPage)
+    const paginatedInvoices = Pagination.getData(filteredInvoices, currentPage, itemsPerPage)
 
     const handleSearch = (event) => {
         setSearch(event.currentTarget.value);
@@ -72,6 +73,12 @@ export const InvoicesPage = Props => {
 
     return (
         <>
+            <div className="d-flex justify-content-between align-items-center">
+                <h1>Liste des Factures</h1>
+                <Link to="/invoices/new"  className="btn btn-primary">
+                    créer une facture
+                </Link>
+            </div>
             <div className="form-group">
                 <input onChange={handleSearch} type="text" value={search} className="form-control"
                        placeholder={"Rechercher ..."}/>
@@ -101,6 +108,9 @@ export const InvoicesPage = Props => {
                     </td>
                     <td className="text-right"> {amount.toLocaleString()} $</td>
                     <th>
+                        <Link to={`/invoices/${id}`} className="btn btn-primary">
+                           modifier
+                        </Link>
                         <button onClick={() => handleDelete(id)}
                                 className="btn-danger btn">Supprimer
                         </button>
@@ -110,8 +120,8 @@ export const InvoicesPage = Props => {
 
                 </tbody>
             </table>
-            {filtredInvoices.length > itemsPerPage &&
-            <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={filtredInvoices.length}
+            {filteredInvoices.length > itemsPerPage &&
+            <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={filteredInvoices.length}
                         onPageChanged={handlePageChange}/>}
 
 

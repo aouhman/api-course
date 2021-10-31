@@ -13,7 +13,8 @@ import {Navbar} from "./js/components/Navbar";
 // start the Stimulus application
 import './bootstrap';
 import {HomePage} from "./js/pages/HomePage";
-import {HashRouter, Redirect, Route, Switch, withRouter} from "react-router-dom";
+import {HashRouter, Route, Switch, withRouter} from "react-router-dom";
+import {CustomerPage} from "./js/pages/CustomerPage";
 import {CustomersPage} from "./js/pages/CustomersPage";
 import {CustomersPageWithPagination} from "./js/pages/CustomersPageWithPagination";
 import {InvoicesPage} from "./js/pages/InvoicesPage";
@@ -22,6 +23,7 @@ import {LoginPage} from "./js/pages/LoginPage";
 import AuthAPI from "./js/services/AuthAPI";
 import AuthContext from "./contexts/AuthContext";
 import {PrivateRoute} from "./js/components/PrivateRoute";
+import {InvoicePage} from "./js/pages/InvoicePage";
 
 AuthAPI.setup()
 const App = () => {
@@ -38,6 +40,8 @@ const App = () => {
                     <Switch>
                         <Route path="/login" component={LoginPage}/>
                         <Route path="/customerspagewithpagination" component={CustomersPageWithPagination}/>
+                        <PrivateRoute component={CustomerPage} path="/customers/:id"/>
+                        <PrivateRoute component={InvoicePage} path="/invoices/:id"/>
                         <PrivateRoute component={CustomersPage} path="/customers"/>
                         <PrivateRoute component={InvoicesPage} path="/invoices"/>
                         <Route path="/invoicespagewithreactpagination" component={InvoicesPageWithReactPagination}/>

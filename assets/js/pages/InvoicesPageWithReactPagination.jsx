@@ -58,7 +58,7 @@ export const InvoicesPageWithReactPagination = Props => {
     }
 
 
-    const filtredInvoices  = invoices
+    const filteredInvoices  = invoices
         .filter(i =>
             i.customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
             i.customer.lastName.toLowerCase().includes(search.toLowerCase()) ||
@@ -68,7 +68,7 @@ export const InvoicesPageWithReactPagination = Props => {
         )
 
         //  const paginatedInvoices = invoices
-        //  Pagination.getData(filtredInvoices, currentPage, itemsPerPage)
+        //  Pagination.getData(filteredInvoices, currentPage, itemsPerPage)
 
     const handleSearch = (event) => {
         setSearch(event.currentTarget.value);
@@ -94,7 +94,7 @@ export const InvoicesPageWithReactPagination = Props => {
                 </thead>
                 <tbody>
 
-                {filtredInvoices.map(({id, amount, sentAt, status, customer, chrono}) => <tr
+                {filteredInvoices.map(({id, amount, sentAt, status, customer, chrono}) => <tr
                     key={id}>
                     <td>{chrono}</td>
                     <td>{customer.firstName} {customer.lastName}</td>
@@ -117,7 +117,7 @@ export const InvoicesPageWithReactPagination = Props => {
             </table>
 
 
-            {filtredInvoices.length ===0 ? <tr><td>Chargement ...</td></tr>:
+            {filteredInvoices.length ===0 ? <tr><td>Chargement ...</td></tr>:
                 <span className="text-center">
                 <ReactPaginate
                 previousLabel={'<'}

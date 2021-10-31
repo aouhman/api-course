@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Pagination} from "../components/Pagination";
 import CustomersAPI from "../services/CustomersAPI";
+import {Link} from "react-router-dom";
 
 
 export const CustomersPage = Props => {
@@ -47,7 +48,7 @@ export const CustomersPage = Props => {
 
 
     const itemsPerPage = 10;
-    const filtredCustomers = customers
+    const filteredCustomers = customers
         .filter(c =>
             c.firstName.toLowerCase().includes(search.toLowerCase()) ||
             c.lastName.toLowerCase().includes(search.toLowerCase()) ||
@@ -55,7 +56,7 @@ export const CustomersPage = Props => {
             (c.company && c.company.toLowerCase().includes(search.toLowerCase()))
         )
 
-    const paginatedCustomers = Pagination.getData(filtredCustomers, currentPage, itemsPerPage)
+    const paginatedCustomers = Pagination.getData(filteredCustomers, currentPage, itemsPerPage)
 
     const handleSearch = (event) => {
         setSearch(event.currentTarget.value);
@@ -64,6 +65,9 @@ export const CustomersPage = Props => {
 
     return (
         <>
+            <div className="d-flex justify-content-between align-items-center">
+
+            </div>
             <div className="form-group">
                 <input onChange={handleSearch} type="text" value={search} className="form-control"
                        placeholder={"Rechercher ..."}/>
@@ -90,6 +94,9 @@ export const CustomersPage = Props => {
                     <td className="text-right"> {invoices.length}</td>
                     <td className="text-right">{totalAmount.toLocaleString()} $</td>
                     <th>
+                        <Link to={`/customers/${id}`} className="btn btn-primary">
+                            modifier
+                        </Link>
                         {invoices.length ? <></>
                             : <button onClick={() => handleDelete(id)}
                                       className="btn-danger btn">Supprimer</button>}
@@ -99,8 +106,8 @@ export const CustomersPage = Props => {
 
                 </tbody>
             </table>
-            {filtredCustomers.length > itemsPerPage &&
-            <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={filtredCustomers.length}
+            {filteredCustomers.length > itemsPerPage &&
+            <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={filteredCustomers.length}
                         onPageChanged={handlePageChange}/>}
 
 
