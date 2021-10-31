@@ -24,7 +24,7 @@ export const InvoicePage = ({match, history}) => {
     const fetchInvoice = async (id) => {
         try {
             const {amount, customer, status} = await InvoicesAPI.find(id);
-            setInvoice({amount, customer:customer.id, status});
+            setInvoice({amount, customer: customer.id, status});
         } catch (e) {
             history.replace("/invoices")
         }
@@ -32,15 +32,15 @@ export const InvoicePage = ({match, history}) => {
     const [customers, setCustomers] = useState([]);
     const fetchCustomers = async () => {
         try {
-            const data  = await CustomersAPI.findAll();
+            const data = await CustomersAPI.findAll();
             setCustomers(data);
-            if(!invoice.customer) setInvoice({...invoice,customer: data[0].id}) ;
-        }catch (e) {
+            if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
+        } catch (e) {
             console.log(e.response)
         }
     }
     useEffect(() => {
-       fetchCustomers()
+        fetchCustomers()
     }, []);
 
 
@@ -61,18 +61,18 @@ export const InvoicePage = ({match, history}) => {
         event.preventDefault();
         try {
             if (editing) {
-                await InvoicesAPI.update(id,  invoice);
+                await InvoicesAPI.update(id, invoice);
             } else {
 
-                await InvoicesAPI.create( invoice)
+                await InvoicesAPI.create(invoice)
                 history.replace("/invoices");
             }
             setErrors({});
         } catch ({response}) {
-                const {violations} = response.data;
+            const {violations} = response.data;
             if (violations) {
                 const apiErrors = {};
-                violations.forEach(({propertyPath,message}) => {
+                violations.forEach(({propertyPath, message}) => {
                     apiErrors[propertyPath] = message;
                 })
                 setErrors(apiErrors);
@@ -90,14 +90,15 @@ export const InvoicePage = ({match, history}) => {
                        placeholder="Montant de la facture" type="number" label="Montant de la facture"/>
                 <Select onChange={handleChange} error={errors.customer} value={invoice.customer} name="customer"
                         label="Client de la facture">
-                    {customers.map(customer => <option key={customer.id} value={customer.id}> {customer.firstName} {customer.lastName} </option>)}
+                    {customers.map(customer => <option key={customer.id}
+                                                       value={customer.id}> {customer.firstName} {customer.lastName} </option>)}
                 </Select>
-               <Select onChange={handleChange} error={errors.status} value={invoice.status} name="status"
-                       label="Status de la facture">
-                   <option value="SENT">Envoyée</option>
-                   <option value="PAID">Paye</option>
-                   <option value="CANCELLED">Annulée</option>
-               </Select>
+                <Select onChange={handleChange} error={errors.status} value={invoice.status} name="status"
+                        label="Status de la facture">
+                    <option value="SENT">Envoyée</option>
+                    <option value="PAID">Paye</option>
+                    <option value="CANCELLED">Annulée</option>
+                </Select>
 
 
                 <div className="form-group">

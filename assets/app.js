@@ -24,6 +24,7 @@ import AuthAPI from "./js/services/AuthAPI";
 import AuthContext from "./contexts/AuthContext";
 import {PrivateRoute} from "./js/components/PrivateRoute";
 import {InvoicePage} from "./js/pages/InvoicePage";
+import {RegisterPage} from "./js/pages/RegisterPage";
 
 AuthAPI.setup()
 const App = () => {
@@ -39,6 +40,7 @@ const App = () => {
                 <main className="container pt-5">
                     <Switch>
                         <Route path="/login" component={LoginPage}/>
+                        <Route path="/register" component={RegisterPage}/>
                         <Route path="/customerspagewithpagination" component={CustomersPageWithPagination}/>
                         <PrivateRoute component={CustomerPage} path="/customers/:id"/>
                         <PrivateRoute component={InvoicePage} path="/invoices/:id"/>
