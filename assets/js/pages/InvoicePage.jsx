@@ -4,6 +4,8 @@ import {Link} from "react-router-dom";
 import InvoicesAPI from "../services/InvoicesAPI";
 import {Select} from "../forms/Select";
 import CustomersAPI from "../services/CustomersAPI";
+import {toast} from "react-toastify";
+import FormContentLoader from "../loaders/FormContentLoader";
 
 export const InvoicePage = ({match, history}) => {
     const {id = "new"} = match.params;
@@ -20,27 +22,39 @@ export const InvoicePage = ({match, history}) => {
         status: ''
     });
     const [editing, setEditing] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const fetchInvoice = async (id) => {
         try {
+            setLoading(true);
             const {amount, customer, status} = await InvoicesAPI.find(id);
             setInvoice({amount, customer: customer.id, status});
+            setLoading(false);
+
         } catch (e) {
+            toast.error("Impossible de charger la facture demandé")
+
             history.replace("/invoices")
         }
     }
     const [customers, setCustomers] = useState([]);
     const fetchCustomers = async () => {
         try {
+            setLoading( true);
             const data = await CustomersAPI.findAll();
             setCustomers(data);
+
             if (!invoice.customer) setInvoice({...invoice, customer: data[0].id});
+            setLoading(false);
         } catch (e) {
+            toast.error("Impossible de charger les clients")
             console.log(e.response)
         }
     }
     useEffect(() => {
         fetchCustomers()
+        setLoading(false)
+
     }, []);
 
 
@@ -49,6 +63,7 @@ export const InvoicePage = ({match, history}) => {
 
             fetchInvoice(id);
             setEditing(true);
+
         }
     }, [id]);
 
@@ -62,9 +77,10 @@ export const InvoicePage = ({match, history}) => {
         try {
             if (editing) {
                 await InvoicesAPI.update(id, invoice);
+                toast.success("La facture à bien été modifié")
             } else {
-
                 await InvoicesAPI.create(invoice)
+                toast.success("La facture à bien été crée")
                 history.replace("/invoices");
             }
             setErrors({});
@@ -76,16 +92,16 @@ export const InvoicePage = ({match, history}) => {
                     apiErrors[propertyPath] = message;
                 })
                 setErrors(apiErrors);
+                toast.error("Une erreur est survenue")
             }
         }
 
     }
     return (
         <>
-
             {!editing ? (<h1>Création de la facture</h1>) : <h1>Modification de la facture</h1>}
-
-            <form onSubmit={handleSubmit}>
+            {loading ?(<FormContentLoader/>):
+                (<form onSubmit={handleSubmit}>
                 <Field onChange={handleChange} error={errors.amount} value={invoice.amount} name="amount"
                        placeholder="Montant de la facture" type="number" label="Montant de la facture"/>
                 <Select onChange={handleChange} error={errors.customer} value={invoice.customer} name="customer"
@@ -109,7 +125,7 @@ export const InvoicePage = ({match, history}) => {
                         Retourner
                     </Link>
                 </div>
-            </form>
+            </form>)}
         </>
 
     );

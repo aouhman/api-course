@@ -2,19 +2,22 @@ import React, {useEffect, useState} from "react";
 import {Pagination} from "../components/Pagination";
 import CustomersAPI from "../services/CustomersAPI";
 import {Link} from "react-router-dom";
+import {toast} from "react-toastify";
+import {TableLoader} from "../loaders/TableLoader";
 
 
 export const CustomersPage = Props => {
     const [customers, setCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
-
+    const [loading, setLoading] = useState(true);
     const fetchCustomers = async () => {
         try {
             const data = await CustomersAPI.findAll()
             setCustomers(data)
+            setLoading(false);
         } catch (e) {
-            console.log(e.response)
+            toast.error("Impossible de charger les clients")
         }
     }
 
@@ -34,8 +37,12 @@ export const CustomersPage = Props => {
 
         try {
             await CustomersAPI.delete(id)
+            toast.error("Le client  à été bien supprimé")
+
+
         } catch (e) {
             setCustomers(originalCustomers);
+            toast.error("Une erreur est survenue")
         }
         /*
         CustomersAPI.delete(id)
@@ -84,19 +91,20 @@ export const CustomersPage = Props => {
                     <th></th>
                 </tr>
                 </thead>
-                <tbody>
+                {!loading && (<tbody>
                 {paginatedCustomers.map(({company, email, firstName, id, invoices, lastName, totalAmount}) => <tr
                     key={id}>
                     <td>{id}</td>
-                    <td>{firstName} {lastName}</td>
+                    <td>
+                        <Link to={`/customers/${id}`}>
+                            {firstName} {lastName}
+                        </Link>
+                    </td>
                     <td>{email}</td>
                     <td>{company}</td>
                     <td className="text-right"> {invoices.length}</td>
                     <td className="text-right">{totalAmount.toLocaleString()} $</td>
                     <th>
-                        <Link to={`/customers/${id}`} className="btn btn-primary">
-                            modifier
-                        </Link>
                         {invoices.length ? <></>
                             : <button onClick={() => handleDelete(id)}
                                       className="btn-danger btn">Supprimer</button>}
@@ -104,8 +112,9 @@ export const CustomersPage = Props => {
                     </th>
                 </tr>)}
 
-                </tbody>
+                </tbody>)}
             </table>
+            {loading && (<TableLoader/>)}
             {filteredCustomers.length > itemsPerPage &&
             <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={filteredCustomers.length}
                         onPageChanged={handlePageChange}/>}

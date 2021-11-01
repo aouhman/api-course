@@ -3,29 +3,33 @@ import {Pagination} from "../components/Pagination";
 import InvoicesAPI from "../services/InvoicesAPI";
 import moment from "moment";
 import {Link} from "react-router-dom";
+import {toast} from "react-toastify";
+import {TableLoader} from "../loaders/TableLoader";
 
 const STATUS_CLASSES = {
-    PAID:"success",
-    SENT:"info",
-    CANCELLED:'danger'
+    PAID: "success",
+    SENT: "info",
+    CANCELLED: 'danger'
 }
 
-const STATUS_LABELS= {
-    PAID:"Payée",
-    SENT:"Envoyée",
-    CANCELLED:'Annulée'
+const STATUS_LABELS = {
+    PAID: "Payée",
+    SENT: "Envoyée",
+    CANCELLED: 'Annulée'
 }
 
 export const InvoicesPage = Props => {
     const [invoices, setInvoices] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
-
+    const [loading, setLoading] = useState(true);
     const fetchInvoices = async () => {
         try {
             const data = await InvoicesAPI.findAll()
             setInvoices(data)
+            setLoading(false)
         } catch (e) {
+            toast.error("Une erreur est survenue")
             console.log(e.response)
         }
     }
@@ -47,7 +51,9 @@ export const InvoicesPage = Props => {
 
         try {
             await InvoicesAPI.delete(id)
+            toast.success("La facture à bien supprimée")
         } catch (e) {
+            toast.error("Une erreur est survenue")
             setInvoices(originalInvoices);
         }
 
@@ -55,13 +61,12 @@ export const InvoicesPage = Props => {
 
 
     const itemsPerPage = 10;
-    const filteredInvoices  = invoices
+    const filteredInvoices = invoices
         .filter(i =>
             i.customer.firstName.toLowerCase().includes(search.toLowerCase()) ||
             i.customer.lastName.toLowerCase().includes(search.toLowerCase()) ||
             STATUS_LABELS[i.status].toLowerCase().includes(search.toLowerCase()) ||
             i.amount.toString().startsWith(search.toLowerCase())
-
         )
 
     const paginatedInvoices = Pagination.getData(filteredInvoices, currentPage, itemsPerPage)
@@ -75,7 +80,7 @@ export const InvoicesPage = Props => {
         <>
             <div className="d-flex justify-content-between align-items-center">
                 <h1>Liste des Factures</h1>
-                <Link to="/invoices/new"  className="btn btn-primary">
+                <Link to="/invoices/new" className="btn btn-primary">
                     créer une facture
                 </Link>
             </div>
@@ -94,22 +99,25 @@ export const InvoicesPage = Props => {
                     <th></th>
                 </tr>
                 </thead>
-                <tbody>
-
+                {!loading && (<tbody>
                 {paginatedInvoices.map(({id, amount, sentAt, status, customer, chrono}) => <tr
                     key={id}>
                     <td>{chrono}</td>
-                    <td>{customer.firstName} {customer.lastName}</td>
+                    <td>
+                        <Link to={`/customers/${customer.id}`}>
+                            {customer.firstName} {customer.lastName}
+                        </Link>
+                    </td>
                     <td>{formatDate(sentAt)}</td>
                     <td className="text-right">
-                        <span className={"text-white badge alert-" +  STATUS_CLASSES[status]}>
+                        <span className={"text-white badge alert-" + STATUS_CLASSES[status]}>
                             {STATUS_LABELS[status]}
                         </span>
                     </td>
                     <td className="text-right"> {amount.toLocaleString()} $</td>
                     <th>
                         <Link to={`/invoices/${id}`} className="btn btn-primary">
-                           modifier
+                            modifier
                         </Link>
                         <button onClick={() => handleDelete(id)}
                                 className="btn-danger btn">Supprimer
@@ -118,8 +126,9 @@ export const InvoicesPage = Props => {
                     </th>
                 </tr>)}
 
-                </tbody>
+                </tbody>)}
             </table>
+            {loading && (<TableLoader/>)}
             {filteredInvoices.length > itemsPerPage &&
             <Pagination currentPage={currentPage} itemsPerPage={itemsPerPage} length={filteredInvoices.length}
                         onPageChanged={handlePageChange}/>}

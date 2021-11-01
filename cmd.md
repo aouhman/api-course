@@ -13,3 +13,15 @@ commande pour creer dossier de configuration  mkdir -p config/jwt
 commande pour generer key jwt  php bin/console lexik:jwt:generate-keypair
 commande pour vider le cache symfony  php bin/console cache:clear
 commande pour installer webpack composer require encore
+
+REACT Commande
+npm install react-dom@16.8.6 pour installer Component pour gérer les route
+npm install react-router@5.0.0 pour installer Component pour gérer les route 
+npm install axios@0.18.0 pour installer axios
+npm install  moment pour installer converter  de date 
+npm install react-paginate --save pour installer la pagination 
+npm install jwt-decode pour decoder le jwt token
+npm install react-toastify pour installer un toaster pour afficher les notification 
+
+
+
