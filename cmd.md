@@ -7,7 +7,7 @@ commande pour migrer la BDD : php bin/console  doctrine:migrations:migrate
 commande pour telecharger le 2 modules faker et fixture dans la version dev : composer require orm-fixtures fzaninotto/faker --dev
 commande pour inserer fake données  php bin/console doctrine:fixtures:load --no-interaction
 commande pour creer new user: php bin/console make:entity User
-commande pour installer le apiPlatform: composer require api  
+commande pour installer le apiPlatform:   
 commande pour installer le JWT : composer  require "lexik/jwt-authentication-bundle"
 commande pour creer dossier de configuration  mkdir -p config/jwt
 commande pour generer key jwt  php bin/console lexik:jwt:generate-keypair
